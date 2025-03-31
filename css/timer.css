@@ -1,0 +1,213 @@
+#main-container {
+  border: 2px solid gray;
+}
+
+#main-container,
+#messages {
+  margin-left: auto;
+  margin-right: auto;
+  width: 316px;
+}
+
+#main-container.standalone {
+  margin-top: 20px;
+}
+
+#main-container.standalone,
+#messages.standalone {
+  width: 600px;
+}
+
+#messages img {
+  margin-right: 5px;
+}
+
+.host, .serial {
+  display: inline-block;
+  vertical-align: top;
+  width: 300px;
+}
+.host.hidden {
+  display: none;
+}
+
+.scanlist li {
+  font-size: 16px;
+  line-height: 1.1;
+  padding: .3em .7em;
+  cursor: pointer;
+}
+
+.scanlist li.trouble {
+  background-color: #ff6060;
+}
+
+.scanlist li.probing {
+  font-weight: bold;
+  background-color: #f9fc2d;
+}
+
+.scanlist li.undiscoverable {
+  background-color: #cccccc;
+}
+
+.scanlist li.user-chosen {
+  border-color: #498128;
+  border-left-width: 4px;
+  border-right-width: 4px;
+}
+
+.scanlist li.chosen {
+  font-weight: bold;
+  background-color: #498128;
+  color: white;
+}
+
+.scanlist-div {
+  /* width: 300px; */
+  border: 3px solid black;
+  margin: 5px;
+}
+
+#profiles-div.racing {
+  height: 30px;
+  overflow-y: scroll;
+}
+
+#lower-container {
+  margin-top: 20px;
+}
+
+#racing-div {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50px;
+}
+
+#racing-lanes {
+  margin-bottom: 10px;
+}
+#racing-lanes .rlane,
+#last-reported-lanes .rlane {
+  display: inline-block;
+  border: solid black 2px;
+  text-align: center;
+}
+
+                     .rlane.masked,
+#racing-lanes        .rlane.masked,
+#last-reported-lanes .rlane.masked {
+  border: solid white 2px;
+}
+.rlane img {
+  vertical-align: bottom;
+}
+
+#events {
+  font-size: 15px;
+  margin-top: 20px;
+}
+
+.status img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+
+#no-serial-api-modal {
+  width: 400px;
+}
+
+#no-serial-api,
+#no-serial-api-http,
+#no-serial-api p,
+#no-serial-api-http p
+{
+  text-align: center;
+  font-size: 20px;
+  margin: 20px;
+}
+
+#need-gesture-modal,
+#competing-modal {
+  width: 400px;
+  height: 200px;
+  padding-top: 50px;
+}
+#need-gesture-modal p,
+#competing-modal p {
+  font-size: 18px;
+  text-align: center;
+}
+
+#timer-settings-modal {
+  width: 400px;
+  height: 500px;
+
+  padding-top: 50px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+#timer-settings-modal h3 {
+    text-align: center;
+}
+
+#timer-settings-details {
+    height: 350px;
+    overflow-y: scroll;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: solid #c0c0c0 3px;
+    margin-bottom: 30px;
+}
+td.settings-flag {
+    border-bottom: none;
+    font-weight: bold;
+    padding: 5px;
+}
+td.settings-desc {
+    border-top: none;
+    border-bottom: none;
+    padding: 5px;
+}
+td.settings-value {
+    border-top: none;
+}
+
+#probe-buttons-div {
+}
+#probe-button {
+    display: inline;
+    width: 210px;
+    margin-left: 20px;
+    margin-right: 10px;
+}
+#timer-settings-button {
+    display: inline;
+    /* width: 50px; */
+    vertical-align: middle;
+    position: relative;
+    bottom: 3px;
+}
+
+#connection-status-div {
+  padding-left: 80px;
+}
+
+#connected {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 3px;
+}
+
+#connected-detail {
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+#last_event {
+  margin-top: 20px;
+  margin-left: 80px;
+}

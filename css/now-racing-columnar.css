@@ -1,0 +1,222 @@
+div.banner {
+  height: 6.8vh;
+}
+div.banner div.banner_title {
+  font-size: 5.3vh;
+}
+div.banner img {
+  max-height: 6.2vh;
+}
+
+div#all-lanes {
+  /* This kills the gap between inline-block elements */
+  font-size: 0px;
+}
+div.lane {
+  display: inline-block;
+  border-width: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  background-color: #000080;
+}
+div.lane_number {
+  height: 10vh;
+  font-size: 6.3vh;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  position: relative;
+  top: 1vh;
+/*
+  background-image: url("img/derby-wheel.jpg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+*/
+}
+
+div.rollable {
+  /* heat_time is specified by font-size; line-height is 1.3 times that. */
+  height: 73.4vh;
+  overflow-y: hidden;
+}
+
+div.heat_time {
+  font-size: 5vh;
+  text-align: center;
+  background-color: #c0c0c0;
+}
+
+div.car {
+  height: 29vh; /* See columnar-now-racing.inc, and div.car img clause, below. */
+  position: relative;
+}
+div.car img {
+  /* margins get computed and set by js code */
+  margin-left: auto;
+  margin-right: auto;
+  object-fit: scale-down;
+  max-height: 29vh; /* From div.car, above. */
+}
+/* This is the field for the car number (only) */
+div.car div.number {
+  background-color: black;
+  color: white;
+  text-align: center;
+  font-size: 4vh;
+  height: 5vh; /* See columnar-now-racing.inc */
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+}
+div.car div.carname {
+  display: none;  /* becomes display: block if there's text. */
+  /* white-space: nowrap;
+     overflow: hidden; */
+  position: absolute;
+  bottom: 5vh;
+  width: 100%;
+  font-size: 3vh;
+  text-align: center;
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+}
+/* Finish place written over the top of the car image and number with a
+   transparent background. */
+div.car div.place {
+  position: absolute;
+  width: 100%;
+  bottom: 5vh;
+  text-align: center;
+  /* Match the image height, or height of div.car - height of div.number */
+  font-size: 24vh;
+  font-weight: bold;
+  line-height: 1em;
+  color: red;
+  background: transparent;
+  /* Becomes semi-transparent via animation after appearing */
+}
+div.racer {
+  height: 38vh; /* See columnar-now-racing.inc, and div.racer img clause, below */
+  position: relative;
+}
+div.racer img {
+  margin-left: auto;
+  margin-right: auto;
+  object-fit: scale-down;
+  max-height: 30vh;  /* From div.racer, above */
+}
+div.racer div.note {
+  display: none;  /* becomes display: block if there's text. */
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  font-size: 2vh;
+  position: absolute;
+  bottom: 4vh;
+  width: 100%;
+}
+div.racer div.name {
+  background-color: black;
+  color: white;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 3vh;
+  height: 4vh; /* See columnar-now-racing.inc */
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
+}
+
+div.bottom-banner {
+  position: fixed;
+  bottom: 0px;
+  height: 9.8vh;  /* 100 - 6.8(banner) - 10(lane_number) - 73.4(rollable) */
+  width: 100%;
+  background-color: #8080c0;
+}
+
+div.bottom-banner div.label {
+  width: 12vh;
+  height: 9.8vh;
+  margin-left: 1.5vh;
+  font-size: 2.5vh;
+  display: inline-block;
+  text-align: center;
+}
+
+div.bottom-banner div.best-time {
+  width: 10vh;
+  height: 9.8vh;
+  display: inline-block;
+  font-size: 3.5vh;
+  text-align: center;
+  border-right: 0.8vh solid #8080c0;
+  background-color: #2d2d42;
+  color: white;
+}
+div.bottom-banner div.best-time div.carno {
+  margin-top: 0.5vh;
+}
+
+div.bottom-banner div.best-time div.time {
+  font-size: 2.5vh;
+}
+
+
+html, body, table { width: 100%; height: 100%; margin: 0; padding: 0; }
+
+/* To avoid scrollbars, probably not necessary */
+body { overflow: hidden; }
+
+
+#overlay_background {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
+
+.overlay_foreground {
+  display: none;
+  width: 512px;
+  padding: 15px 20px;
+  background-color: transparent;
+/*  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5); */
+}
+
+#timer_overlay {
+  color: #a7101c;
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#timer_overlay p {
+  background: white;
+  opacity: 0.75;
+}
+
+
+#reschedule_overlay p {
+  color: #cf1f25;
+  font-size: xxx-large;
+  text-align: center;
+  font-weight: bold;
+  background: white;
+  opacity: 0.75;
+}

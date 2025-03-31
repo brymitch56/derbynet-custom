@@ -1,0 +1,187 @@
+/* CSS adapted from
+http://blog.stevensanderson.com/2011/10/05/full-height-app-layouts-a-css-trick-to-make-it-easier/
+*/
+
+.dz-browser-not-supported .dz-message {
+    height: 0;
+    overflow: hidden;
+}
+
+body { margin: 0; }
+
+.body-wrapper { /* body row */
+ position: absolute;
+ top: 128px;
+ bottom: 0;
+ left: 0;
+ right: 0;
+ overflow: hidden;
+}
+
+.thumblist {
+ position: absolute;
+ top: 0;
+ bottom: 0;
+ left: 0;
+ width: 300px;
+ overflow-x: hidden;
+ overflow-y: auto;
+ z-index: 1;
+}
+
+.thumblist li { z-index: 2; }
+
+.thumblist li.highlight {
+  background-color: #ff8080;
+}
+
+.thumbnail {
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+}
+.thumbnail img {
+  max-width: 150px;
+  max-height: 150px;
+}
+img.unassigned-photo,
+img.ui-draggable-dragging {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.thumbnail.hidden {
+   display: none;
+}
+
+
+.thumbnail a img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+ }
+
+.lost_photo {
+  font-style: italic;
+}
+
+.photothumbs {
+ position: absolute;
+ top: 0;
+ bottom: 0;
+ left: 300px;
+ right: 0;
+   overflow-x: visible;
+ overflow-y: auto;
+ z-index: 1;
+}
+
+.droppableHover {
+  background-color: #ffffb4;
+}
+
+#photo_crop_modal {
+    top: 0px;
+    width: 650px;
+}
+#photo_basename,
+#crop_instructions {
+  text-align: center;
+}
+
+#photo_basename {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.trouble {
+    border: 5px solid #ff6666;
+}
+.trouble img {
+    vertical-align: middle;
+}
+
+#sort_controls {
+  position: absolute;
+  left: 2px; 
+  font-size: 16px;
+}
+
+#sort_controls .sort_div {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+}
+
+#sort_controls .sort_button {
+  position: absolute;
+  top: 0px;
+  width: 60px;
+  height: 30px;
+}
+
+#sort_controls a {
+  display: inline-block;
+  text-align: center;
+  font-size: 20px;
+  min-width: 60px;
+  top: 0px;
+}
+
+#sort_controls a.current_sort {
+  color: #dddd88;
+  text-decoration: none;
+}
+
+#center_buttons {
+  width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#center_buttons a {
+  width: 88px;
+  height: 30px;
+  font-size: 20px;
+}
+
+#center_buttons #refresh-button {
+  float: left;
+  font-size: 20px;
+  margin-left: 0px;
+  margin-top: 0px;
+}
+
+#center_buttons #other-button {
+  width: 88px;
+  font-size: 20px;
+  margin-left: 130px;
+}
+
+#upload_target {
+  position: absolute;
+  right: 2px;
+  height: 53px;
+  min-height: 50px;
+
+  padding-top: 10px;
+  padding-bottom: 0px;
+  min-width: 350px;
+  border: 5px solid #023882;
+  border-radius: 0.4em 0.4em 0.4em 0.4em;
+}
+
+#upload_target .dz-message {
+  text-align: center;
+/* TODO margin 2em 0; */
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+#upload_target .dz-message span {
+  line-height: 20px;
+  font-size: 16px;
+}
+#upload_target,
+#upload_target * {
+  box-sizing: border-box;
+}

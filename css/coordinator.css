@@ -1,0 +1,414 @@
+.control_column {
+  display: inline-block;
+  vertical-align: top;
+  width: 485px;
+}
+
+.double_control_column {
+  width: 975px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.control_column_container {
+  width: 975px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#now-racing-group div.heat-text {
+  display: inline-block;
+  width: 200px;
+}
+
+div.adjustment-needed {
+  background: #ffa500;
+}
+
+div.adjustment-needed div.late-arrival-prompt,
+div.adjustment-needed div.adjustment-in-progress-message {
+  color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-top: 0px;
+  padding-top: 5px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.1;
+}
+div.adjustment-needed div.adjustment-in-progress-message {
+  text-weight: bold;
+  font-size: 20px;  
+}
+
+div.adjustment-needed div.late-arrival-prompt p, 
+div.adjustment-needed div.late-arrival-prompt span {
+  font-size: 18px;
+}
+
+div.adjustment-needed div.late-arrival-prompt ul {
+  list-style-position: inside;
+  padding-left: 0px;
+}
+
+div.adjustment-needed input.late-arrival-button {
+  background: #ffa500;
+  border: solid 3px black;
+}
+div.adjustment-needed input.late-arrival-button[disabled] {
+  background: #808000;
+}
+
+.heat-lineup {
+  display: inline-block;
+  width: 730px;
+  margin-right: 0px;
+
+}
+.heat-lineup div.racing {
+  display: inline-block;
+}
+
+.heat-lineup div.now-racing-spacer {
+  display: inline-block;
+  width: 50px;
+}
+
+.heat-lineup div.staging {
+  display: inline-block;
+}
+
+.heat-lineup table {
+  width: 100%;
+}
+
+.heat-lineup td {
+  margin: 0px;
+  padding: 0px;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.heat-lineup td.racer-name {
+  max-width: 200px;
+}
+
+#now-racing-group input.stop-test {
+  float: right;
+  font-size: 18px;
+}
+
+.control_group {
+  border: 3px solid #023882;
+  margin:5px;
+  padding: 10px;
+ }
+
+.control_column .scheduling_control {
+  position: relative;
+  cursor: pointer;
+}
+
+#master-schedule-group h3 {
+  color: #be2525;
+  border-bottom: solid black 2px;
+}
+
+.current {
+  background-color: #F7D117;
+}
+
+.timer_control_group div#timer-test {
+  float: right;
+  clear: right;
+  margin-top: 9px;
+}
+
+.timer_control_group div#timer-test a {
+  width: 98px;
+  height: 25px;
+  padding-top: 5px;
+  color: white;
+  display: inline-block;
+  margin-left: 6px;
+}
+
+#timer-testing-herald {
+  width: 100%;
+  padding-top: 20px;
+  text-align: center;
+  background-color: #ff0000;
+  color: white;
+  border: 3px solid black;
+  text-shadow: unset;
+  font-size: 24px;
+}
+
+#not-racing-warning {
+  width: 960px;
+  margin: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  background-color: #ff0000;
+  color: white;
+  border: 3px solid black;
+  text-shadow: unset;
+  font-size: 24px;
+}
+
+.current.control_group h3 {
+  margin-top: 0px;
+  font-size: x-large;
+  margin-bottom: 0px;
+}
+
+.current.control_group p {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.new_round_control h3 {
+  margin-bottom: 0px;
+}
+
+.status_icon {
+   float: right;
+}
+
+h3 {
+    margin-top: 0px;
+}
+
+div.scheduling_control div.next_tag {
+  background-color: #cc0000;
+  color: white;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 55px;
+  text-align: center;
+  font-size: 16px;
+}
+
+div.scheduling_control div.master_heat_reminder {
+  float: right;
+}
+div.scheduling_control div.master_heat_reminder .master_heat_msg {
+  background-color: #cc0000;
+  color: white;
+  vertical-align: top;
+  font-weight: bold;
+}
+
+p.last_contact {
+    font-size: 18px;
+}
+
+#playlist-group a.button_link,
+#playlist-group input[type='button'] {
+  color: white;
+  height: 20px;
+  width: 440px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 1px;
+}
+#playlist-group input[type='button'] {
+  height: 40px;
+  width: 470px;
+  background: #006000;
+}
+
+.centered_flipswitch {
+  width: 242px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0px;
+  font-size: x-large;
+}
+
+#prev_heat_button {
+  margin-left: 8px;
+
+  display: inline-block;
+  width: 75px;
+  position: relative;
+  top: 7px;
+  height: 41px;
+
+  padding-top: 10px;
+}
+#prev_heat_button img {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  left: 18px;
+}
+
+#manual_results_button {
+  display: inline-block;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+#skip_heat_button {
+  display: inline-block;
+  width: 75px;
+  position: relative;
+  top: 7px;
+  height: 41px;
+  padding-top: 10px;
+}
+
+#skip_heat_button img {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  left: 23px;
+}
+
+#start_race_button_div input[type='button'] {
+  background: #008000;
+}
+
+/* Start #new-round-modal */
+#new-round-modal label {
+  display: inline-block;
+  width: 180px;
+  text-align: right;
+}
+
+#aggregate-by-div {
+  margin-bottom: 20px;
+}
+#new-round-top {
+  width: 100px;
+}
+#new-round-top-racers {
+  font-size: 24px;
+}
+#bucketed-div {
+  margin-bottom: 20px;
+}
+
+#new-round-modal label[for=agg-classname] {
+  text-align: left;
+  width: 300px;
+}
+
+#constituent-clip {
+  width: 500px;
+  overflow-x: hidden;
+}
+#constituent-div {
+  width: 1100px;
+}
+#constituent-rounds,
+#constituent-subgroups {
+  display: inline-block;
+  width: 500px;
+  transition-duration: 0.5s;
+  transition-property: margin-left;
+}
+
+#new-round-modal .aggregate-label {
+    display: inline-block;
+    width: 300px;
+    margin-right: 1em;
+    text-align: right;
+    font-size: 16px;
+    font-weight: bold;
+}
+#new-round-modal input[type=submit] {
+  margin-top: 20px;
+}
+/* End of #new-round-modal */
+
+#manual_results_modal {
+  width: 500px;
+}
+
+#manual_results_modal table {
+  width: 100%;
+}
+
+.roundno {
+  width: 30px;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.progress {
+    width: 450px;
+    height: 15px;
+    border: 1px solid black;
+    overflow: hidden;
+    background: rgba(255,255,255,0.5);
+}
+
+.progress .bar1 {
+    width: 0%;
+    height: 100%;
+    float: left;
+    border-right: 1px solid #000000;
+    background: #023882;
+}
+
+.progress .bar2 {
+    width: 0%;
+    height: 100%;
+    float: left;
+    border-right: 1px solid #000000;
+    background: #F7D117;
+}
+
+div.block_buttons[data-name=buttons] {
+ margin-top: 20px;
+}
+
+.new_rounds_control_group .block_buttons {
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+.new_rounds_control_group .block_buttons input {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.master_schedule_group .block_buttons input {
+    margin-top: 13px;
+}
+
+#purge_modal {
+  background: #cb5a5e;
+  background: repeating-linear-gradient(
+    -45deg,
+    #cb5a5e,
+    #cb5a5e 12px,
+    #ffffff 10px,
+    #ffffff 23px
+  );
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
+  padding: 10px;
+}
+
+#purge_modal p {
+  text-align: center;
+}
+
+#purge_modal h3 {
+  text-align: center;
+  font-size: 24px
+}
+#purge_modal_inner {
+  position: relative;
+  margin: 0px;
+  padding: 10px;
+  background: #ffffff;
+}

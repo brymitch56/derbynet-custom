@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Flag</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+<?php require('inc/kiosk-poller.inc'); ?>
+<?php require('inc/stylesheet.inc'); ?>
+<link rel="stylesheet" type="text/css" href="css/kiosks.css"/>
+<link rel="stylesheet" type="text/css" href="css/award-presentations-kiosk.css"/>
+<style type="text/css">
+html {
+  background-color: rgb(230, 230, 230);
+}
+
+#flagdiv {
+  position: fixed;
+  top: 64px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+#top-margin {
+  height: 5%;
+}
+#flag {
+  display: block; 
+  max-height: 90%;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  height: auto;
+  width: auto;
+}
+</style>
+</head>
+<body>
+<?php
+require_once('inc/banner.inc');
+make_banner('', /* back_button */ false);
+?>
+
+<div id="flagdiv">
+       <div id="top-margin">&nbsp;</div>
+  <img id="flag" src="image.php/flag"/>
+</div>
+
+<?php require('inc/ajax-failure.inc'); ?>
+</body>
+</html>

@@ -1,0 +1,217 @@
+#top_matter {
+    height: 80px;
+}
+
+.award_superlative {
+    text-align: right;
+    width: 6em;
+}
+
+.award_primary {
+    text-align: left;
+}
+
+.award_racers {
+    float: right;
+    width: 20%;
+}
+
+#awards {
+    position: absolute;
+    left: 0;
+    width: 300px;
+    top: 140px; 
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#awards-empty {
+  font-weight: bold;
+  padding-left: 30px;
+  padding-right: 30px;
+  text-align: center;
+}
+
+#awards ul {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 10px;
+}
+
+#awards li {
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+
+    min-height: 100px;
+    border: 1px black solid;
+}
+
+#awards ul a {
+    color: black;
+    cursor: pointer;
+}
+
+#awards li p {
+    padding-bottom: 0px;
+    margin: 0px;
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+#awards p.awardname {
+    font-weight: bold;
+    margin-top: 12px;
+}
+#awards .awardtype {
+    font-style: italic;
+}
+#awards .recipient {
+    float: right;
+}
+#awards .votes {
+  float: right;
+  margin-top: 10px;
+  margin-right: 5px;
+  border: 1px solid black;
+  padding: 2px;
+}
+
+#racers {
+    position: absolute;
+    left: 300px;
+    right: 0;
+    top: 140px;
+    bottom: 0;
+    overflow-y: auto;
+}
+
+.award_marker {
+    position: absolute;
+    left: 61px;  /* (150px - 27px) / 2 */
+}
+
+.adhoc_marker {
+    position: absolute;
+    left: 90px;
+}
+
+.judging_racer {
+    position: relative;
+    display: inline-block;
+    /* Default is vertical-align: baseline, which lines up the bottoms of the images. */
+    vertical-align: top;
+    width: 150px;
+    height: 200px;
+    /* background-image gets set by javascript for speed award winners */
+    /* background-image: url('../img/laurel.png'); */
+    background-image: none;
+    background-repeat: no-repeat;
+}
+.judging_racer img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 100px;
+    max-width: 100px;
+}
+
+.judging_racer .carno {
+    text-align: center;
+    width: 100%;
+    font-size: 24px;
+    font-weight: bold;
+}
+.judging_racer .racer_name,
+.judging_racer .group_name,
+.judging_racer .rank_name {
+    text-align: center;
+    width: 100%;
+    font-size: 16px;
+}
+
+#awards li.award-recipient-hover,
+#racers .judging_racer.award-recipient-hover {
+    background-color: #ffffb4;
+}
+
+#awards li.award-recipient-hover.unacceptable-hover-filled,
+#awards li.award-recipient-hover.unacceptable-hover-wrong-class,
+#racers .judging_racer.unacceptable-hover-wrong-class {
+    background-color: #ffffff;
+}
+
+#awards li.unacceptable-hover-filled a.recipient {
+    background-color: #ffb4b4;
+}
+
+#awards li.unacceptable-hover-wrong-class p.class-and-rank,
+#racers div.judging_racer.unacceptable-hover-wrong-class div.subgroup_name, 
+#racers div.judging_racer.unacceptable-hover-wrong-class div.group_name {
+    background-color: #ffb4b4;
+}
+
+
+#racer_awards_modal span {
+    font-size: inherit;
+}
+
+#ballot_modal_awards {
+  margin-bottom: 35px;
+}
+#ballot_modal_awards label {
+  font-size: 18px;
+  margin-left: 15px;
+  margin-right: 10px;
+}
+#ballot_modal_awards select {
+  font-size: 20px;
+}
+#ballot_modal .usage-hint {
+  margin-left: 50px;
+  margin-right: 50px;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+#ballot_results_tabulation {
+  margin-top: 20px;
+  margin-bottom: 35px;
+}
+
+#ballot-button-div {
+  position: absolute;
+  left: 25px;
+}
+
+#dd-prompt {
+  margin-left: 10px;
+  background: #ccc;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#sort_controls {
+  position: absolute;
+  text-align: center;
+  right: 25px;
+  width: 300px;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+#sort_controls a {
+  display: inline-block;
+  text-align: center;
+  font-size: 20px;
+  font-weight: normal;
+  min-width: 60px;
+}
+
+#sort_controls a.current_sort {
+  color: #000000;
+  text-decoration: none;
+}

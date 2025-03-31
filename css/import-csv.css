@@ -1,0 +1,234 @@
+/* Undoing stuff from ondeck.css: */
+th, tbody tr:first-child th {
+    padding-right: 12px;
+    padding-top: 0px;
+}
+
+div#variations {
+  height: 51px;
+    background-color: #ffffff;
+    margin-right: 10px;
+    margin-left: 10px;
+   margin-top: 5px;
+   margin-bottom: 5px;
+
+}
+
+#variations #encoding {
+  font-size: 20px;
+  float: right;
+  display: inline-block;
+}
+#variations #sheet {
+  float: right;
+  display: inline-block;
+  padding-right: 10px;
+}
+
+#assign_label_message {
+    clear: right;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.upload_complete_message {
+  color: #008000;
+}
+.upload_failure_message {
+  color: #800000;
+}
+
+.file_target input {
+    height: 300px;
+    width: 100%;
+    opacity: 0;
+    z-index: 2;
+    position: absolute;
+    cursor: pointer;
+}
+.file_target label {
+    height: 300px;
+    width: 100%;
+    cursor: pointer;
+}
+#please_select_message {
+    margin-top: 30px;
+    text-align: center;
+    font-size: x-large;
+    font-weight: bold;
+}
+#drop_img {
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px;
+}
+    
+
+.file_target {
+    border: 4px dashed #023882;
+}
+.file_target.draghover {
+    border: 4px solid #023882;
+}
+
+.fields .target {
+    background-color: #e0e0e0;
+    margin-left: 100px;
+}
+
+.label_target {
+  height: 50px;
+  border: 4px dashed #023882;
+}
+
+.label_target_hover {
+  background-color: #ffffb4;
+  border: 4px solid #023882;
+}
+
+.label_target_filled {
+  border: 4px solid #023882;
+}
+
+.fields .fields_target_hover {
+  background-color: #ffffb4;
+}
+
+.fields_target_hover {
+  background-color: #ffffb4;
+}
+
+.field {
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border: 10px solid #023882;
+  /* margin: 5px; */
+  background-color: #F7D117;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.field.optional {
+  /* border is now 5px instead of 10px, 
+     make up the difference in the padding */
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border: 5px solid #023882;
+}
+
+.dim, .header_row td {
+    background-color: #dddddd;
+    color: #999999;
+}
+
+.fields .target {
+    float: left;
+}
+
+#meta {
+    display: inline-block;
+}
+
+input[type='button'], input[type='submit'] {
+    color:#ffffff;
+	width: 240px;
+    padding:10px 15px;
+    margin-top:3px;
+	margin-bottom: 20px;
+    font-size: x-large;
+
+    background: #2d2d2d; /* Old browsers */
+    background: -moz-linear-gradient(top,  #424242 0%, #2d2d2d 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#424242), color-stop(100%,#2d2d2d)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #424242 0%,#2d2d2d 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #424242 0%,#2d2d2d 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #424242 0%,#2d2d2d 100%); /* IE10+ */
+    background: linear-gradient(top,  #424242 0%,#2d2d2d 100%); /* W3C */
+    border: 1px solid #666666;
+    border-right-width: 1px;
+    border-radius: 0.4em 0.4em 0.4em 0.4em;
+
+    cursor: pointer;
+}
+
+.fields {
+    margin-bottom: 13px;
+}
+
+.fields table {
+    border: none;
+}
+
+.fields td {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border: none;
+}
+
+div#state-of-play {
+    margin-top: 15px;
+    font-size: 20px;
+    width: 100%;
+    background-color: #e0eaf9;
+}
+
+.footer {
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
+  clear: right;
+  text-align: center;
+}
+
+#controls {
+    height: 104px;
+}
+
+/* Sometimes all the outcome cells are empty, but we don't want the table to shift */
+.outcome {
+    width: 5em;
+}
+#csv_content {
+    clear: left;
+}
+#csv_content tr th {
+    font-size: 16px;
+}
+
+#csv_content tr th.label_target {
+    font-size: 18px;
+    /* TODO color: #808080; But we don't want this to apply to a .field within the label_target */
+    line-height: 1.1;
+}
+#csv_content tr th .ok_outcome {
+    font-size: 24px;
+    color: green;
+}
+#csv_content tr th .failed_outcome {
+    font-size: 24px;
+    color: red;
+}
+
+/* These try to restore the look of the page after jquery.mobile has manipulated it.
+  TODO Since all we really want out of this is the cool-looking flipswitch elements, find a way just to take that,
+  without all the weird page-loading behaviors. */
+
+.ui-page-theme-a { background-color: #ffffff; }
+div.import_csv {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+th .ui-flipswitch {
+    font-size: 16px;
+}
+
+.ui-mobile .ui-page-active { overflow-x: auto; }

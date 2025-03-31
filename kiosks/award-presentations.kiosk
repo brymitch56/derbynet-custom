@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Award Presentation</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+<?php require('inc/kiosk-poller.inc'); ?>
+<?php require('inc/stylesheet.inc'); ?>
+<link rel="stylesheet" type="text/css" href="css/kiosks.css"/>
+<link rel="stylesheet" type="text/css" href="css/award-presentations-kiosk.css"/>
+<script type="text/javascript">
+ var g_confetti = <?php
+    $confetti = isset($_GET['confetti']) ? $_GET['confetti'] : true;
+    echo $confetti ? "true" : "false";
+ ?>;
+</script>
+<script type="text/javascript" src="js/award-presentations-kiosk.js"></script>
+</head>
+<body>
+<div class="award-background">
+  <video class="confetti" muted="true" loop="true">
+    <source src="confetti.webm" type="video/webm"/>
+    <source src="confetti.mov" type="video/quicktime"/>
+  </video>
+  <div class="award-trophy" id="awardname"></div>
+
+  <div class="reveal" id="award-racer-text">
+    <p class="award-racer"><span class="car-number" id="carnumber"></span></p>
+    <p class="award-racer">
+      <span class="recipient" id="recipient"></span>
+    </p>
+    <p class="award-racer"><span class="car-name" id="carname"></span></p>
+    <p class="award-racer"><span class="subgroup" id="subgroup"></span></p>
+  </div>    
+
+  <div id="photos">
+    <div class="award-racer-photo reveal" id="headphoto">
+    </div>
+
+    <div class="award-car-photo reveal" id="carphoto">
+    </div>
+  </div>
+</div>
+
+<?php require('inc/ajax-failure.inc'); ?>
+</body>
+</html>

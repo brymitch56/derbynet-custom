@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Identify</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+function report_window_size() {
+$("#screensize").text($(window).width() + " x " + $(window).height());
+}
+
+$(function () {
+    report_window_size();
+    setInterval(report_window_size, 500);
+});
+
+</script>
+<?php require('inc/kiosk-poller.inc'); ?>
+<?php require('inc/stylesheet.inc'); ?>
+<link rel="stylesheet" type="text/css" href="css/kiosks.css"/>
+<link rel="stylesheet" type="text/css" href="css/big-logo.css"/>
+</head>
+<body>
+<?php
+require_once('inc/banner.inc');
+make_banner('DerbyNet Kiosk', /* back_button */ false);
+
+// $g_kiosk_address is assigned in kiosk.php
+?>
+ <p class="kiosk_title"><?php echo madlib_string($g_kiosk_address); ?></p>
+ <p id="kiosk_name" class="kiosk_title"></p>
+ <div class="full_page_center">
+   <p id="screensize"></p>
+   <p><?php echo $g_kiosk_address; ?></p>
+   <div class="logo-frame">
+     <img class="big-logo" src="img/derbynet-300.png"/>
+   </div>
+ </div>
+<?php require_once('inc/ajax-failure.inc'); ?>
+</body>
+</html>
