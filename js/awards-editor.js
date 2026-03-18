@@ -253,9 +253,10 @@ function toggleDesignCategoryAssignment(awardId, racerId, assign) {
   $.ajax(g_action_url, {
     type: 'POST',
     data: {
-      action: 'design.save-entries',
+      action: 'design.toggle-entry',
       racerid: racerId,
-      entries: JSON.stringify([{awardid: awardId, selected: assign}])
+      awardid: awardId,
+      selected: assign ? 'true' : 'false'
     },
     success: function(data) {
       designCategoryAssignments[racerId] = assign;

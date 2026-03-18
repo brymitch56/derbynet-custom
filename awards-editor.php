@@ -23,7 +23,7 @@ require_permission(EDIT_AWARDS_PERMISSION);
 <script type="text/javascript" src="js/dashboard-ajax.js"></script>
 <script type="text/javascript" src="js/mobile.js"></script>
 <script type="text/javascript" src="js/modal.js"></script>
-<script type="text/javascript" src="js/awards-editor.js"></script>
+<script type="text/javascript" src="js/awards-editor.js?v=2"></script>
 <link rel="stylesheet" type="text/css" href="css/mobile.css"/>
 <link rel="stylesheet" type="text/css" href="css/awards-editor.css"/>
 </head>

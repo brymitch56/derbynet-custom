@@ -7,13 +7,13 @@ $roles = array('' => array('password' => '',
                 'Photo' => array('password' => 'flashbulb',
                                  'permissions' => PHOTO_UPLOAD_PERMISSION,
                                  'interactive' => false),
-                'RaceCrew' => array('password' => 'murphy',
+                'RaceCrew' => array('password' => 'NY2911crew',
                                     'permissions' =>
                                     VIEW_RACE_RESULTS_PERMISSION | VIEW_AWARDS_PERMISSION
                                     | CHECK_IN_RACERS_PERMISSION | REVERT_CHECK_IN_PERMISSION
                                     | ASSIGN_RACER_IMAGE_PERMISSION | JUDGING_PERMISSION | PHOTO_UPLOAD_PERMISSION
                                     | EDIT_RACER_PERMISSION | REGISTER_NEW_RACER_PERMISSION),
-                'RaceCoordinator' => array('password' => 'doyourbest',
+                'RaceCoordinator' => array('password' => 'HarvestNY2911',
                                            'permissions' => -1)
 	       );
 $post_setup_role = 'RaceCoordinator';

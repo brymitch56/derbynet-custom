@@ -274,7 +274,6 @@ function select_all(checked) {
 
 // Also modifies what sortorder options are displayed, and what subjects list is
 // shown.
-// Look for this function
 function reveal_doc_specific_options() {
   $("div[data-docname]").addClass("hidden");
 
@@ -306,82 +305,16 @@ function reveal_doc_specific_options() {
 }
 
 $(function() {
+  // Make sure any duplicate filter is removed immediately
+  $("#category-filter-container").remove();
+  
   poll();
   g_poll_interval = setInterval(function() { poll(); }, 10000);
   reveal_doc_specific_options();
   $("input[type=radio][name='doc-class']").change(function() { reveal_doc_specific_options(); });
   
-  // Add event listener for changes to the document selection
+  // Simple cleanup handler to remove any dynamically created filter
   $("input[name='doc-class']").on('change', function() {
-    var selectedDoc = $("input[name='doc-class']:checked").val();
-    
-    // Remove any existing category filter if it exists
     $("#category-filter-container").remove();
-    
-    // Only add the category filter for CarPassDocument
-    if (selectedDoc === "CarPassDocument") {
-      // Load design categories
-      $.ajax("action.php", {
-        type: 'GET',
-        data: {
-          query: "award.design-list"
-        },
-        success: function(data) {
-          if (data.awards && data.awards.length > 0) {
-            // Create the category filter dropdown
-            var categoryFilter = $('<div id="category-filter-container" style="margin-top:10px;">' +
-                                 '<label for="category-filter">Design Category Filter: </label>' +
-                                 '<select id="category-filter" style="margin-left:5px;">' +
-                                 '<option value="0">All Racers</option>' +
-                                 '</select>' +
-                                 '</div>');
-            
-            // Add options for each design category
-            var select = categoryFilter.find('select');
-            for (var i = 0; i < data.awards.length; i++) {
-              var award = data.awards[i];
-              $('<option value="' + award.awardid + '">' + award.awardname + '</option>').appendTo(select);
-            }
-            
-            // Add the dropdown after the sort order dropdown
-            categoryFilter.insertAfter("#sortorder-paragraph");
-            
-            // Add change event handler
-            select.on('change', function() {
-              var categoryId = $(this).val();
-              
-              if (categoryId == 0) {
-                // If "All Racers" is selected, just use the normal racer list
-                $.ajax("action.php", {
-                  type: 'GET',
-                  data: {
-                    query: "racer.list",
-                    order: $("#sortorder-racers option:selected").val()
-                  },
-                  success: function(data) {
-                    process_racer_list(data);
-                  }
-                });
-              } else {
-                // Filter by design category
-                $.ajax("action.php", {
-                  type: 'GET',
-                  data: {
-                    query: "racer.by-design-category",
-                    awardid: categoryId
-                  },
-                  success: function(data) {
-                    process_racer_list(data);
-                  },
-                  error: function() {
-                    alert("Error loading racers for the selected category");
-                  }
-                });
-              }
-            });
-          }
-        }
-      });
-    }
   });
 });

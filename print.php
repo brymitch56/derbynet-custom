@@ -178,26 +178,6 @@ foreach ($doc_classes as $c => $details) {
         </select>
       </p>
     </div>
-<div id="category-filter-div" class="hidden">
-      <p id="category-filter-paragraph">
-        <label for="category-filter">Design Category Filter:</label>
-        <select id="category-filter" onchange="handle_category_filter_change()">
-          <option value="0">All Racers</option>
-          <?php
-            // Load design awards for the category filter
-            $stmt = $db->query('SELECT a.awardid, a.awardname 
-                               FROM Awards a
-                               INNER JOIN AwardTypes at ON a.awardtypeid = at.awardtypeid
-                               WHERE at.awardtype IN ("Design General", "Design Trophy")
-                               ORDER BY a.awardname');
-            
-            foreach ($stmt as $row) {
-              echo '<option value="' . $row['awardid'] . '">' . htmlspecialchars($row['awardname']) . '</option>';
-            }
-          ?>
-        </select>
-      </p>
-    </div>
 
     <div id="sortorder-awards-div">
     </div>
