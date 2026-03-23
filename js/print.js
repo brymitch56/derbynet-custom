@@ -17,7 +17,7 @@ function print_selected() {
     // ids aren't meaningful for this, but we need at least one.
     ids = [0];
   }
-  if (ids.length == 0) {
+  if (ids.length == 0 && $("#walkins-count").val() == 0) {
     // Button should have been disabled anyway
     return;
   }
@@ -39,7 +39,9 @@ function print_selected() {
   });
   
   window.open("render-document.php/" + doc_class_details['type'] + "/" + doc_class
-              + "?options=" + encodeURIComponent(JSON.stringify(options))
+              + "?walkins=" + $("#walkins-count").val()
+                + ($("#walkins-by-partition").is(':checked') ? "p" : "")
+              + "&options=" + encodeURIComponent(JSON.stringify(options))
               + "&ids=" + ids.join(),
               "_blank");
 }
@@ -55,6 +57,7 @@ function update_print_button() {
   } else if (doc_class_details['type'] == 'summary') {
     enabled = true;
   }
+  enabled = enabled || $("#walkins-count").val() > 0;
   $("#print-selected").prop('disabled', !enabled);
 }
 
@@ -67,6 +70,11 @@ function on_tr_click(event) {
 }
 
 function process_racer_list(data) {
+  if (data.hasOwnProperty('cease')) {
+    clearInterval(g_poll_interval);
+    window.location.href = '../index.php';
+    return;
+  }
   var table = $("div#subject-racers table");
   $.each(data.racers, function (index, racer) {
     var racerid = racer.racerid;
@@ -129,6 +137,11 @@ function make_classes_and_ranks(data) {
 }
 
 function process_award_list(data) {
+  if (data.hasOwnProperty('cease')) {
+    clearInterval(g_poll_interval);
+    window.location.href = '../index.php';
+    return;
+  }
   var awardtypes = make_award_types(data);
   var classes_and_ranks = make_classes_and_ranks(data);
   var table = $("div#subject-awards table");
@@ -165,6 +178,10 @@ function process_award_list(data) {
     // TODO ranks
     $(cells[3]).text(award.firstname + ' ' + award.lastname);
   });
+  if (data.awards.length == 0) {
+    table.find("tr").remove();
+    table.append("<tr><td>(No awards defined.)</td></tr>");
+  }
 }
 
 function handle_sortorder_racers_change() {
@@ -177,45 +194,6 @@ function handle_sortorder_racers_change() {
           success: function(data) {
             process_racer_list(data);
           },
-         });
-}
-
-function handle_category_filter_change() {
-  var categoryId = $("#category-filter").val();
-  
-  if (categoryId == 0) {
-    // If "All Racers" is selected, just use the normal racer list
-    $.ajax("action.php",
-           {type: 'GET',
-            data: {query: "racer.list",
-                   order: $("#sortorder-racers option:selected").val()},
-            success: function(data) {
-              process_racer_list(data);
-            },
-           });
-  } else {
-    // Filter by design category
-    $.ajax("action.php",
-           {type: 'GET',
-            data: {query: "racer.by-design-category",
-                   awardid: categoryId},
-            success: function(data) {
-              process_racer_list(data);
-            },
-           });
-  }
-}
-
-function handle_design_category_change() {
-  var categoryId = $("#design-category-filter option:selected").val();
-  
-  $.ajax("action.php",
-         {type: 'GET',
-          data: {query: "racer.by-design-category",
-                 awardid: categoryId},
-          success: function(data) {
-            process_racer_list(data);
-          }
          });
 }
 
@@ -240,10 +218,6 @@ function poll() {
           data: {query: "racer.list",
                  order: $("#sortorder-racers option:selected").val()},
           success: function(data) {
-            if (data.hasOwnProperty('cease')) {
-              clearInterval(g_poll_interval);
-              window.location.href = '../index.php';
-            }
             process_racer_list(data);
           },
          });
@@ -284,17 +258,14 @@ function reveal_doc_specific_options() {
   var doc_class_details = doc_classes[doc_class];
   $("div[data-docname='" + doc_class + "']").removeClass("hidden");
 
-  // Add this line to hide the category filter by default
-  $("#category-filter-div").addClass('hidden');
+  $("#walkins-div").toggleClass('hidden', doc_class_details['type'] != 'racer');
+  if (doc_class_details['type'] != 'racer') {
+    $("#walkins-count").val(0);
+  }
 
   // Switch between award/racer selections, depending on type of docclass
   if (doc_class_details['type'] == 'racer') {
     $("#subject-racers, #sortorder-racers-div").removeClass("hidden");
-    
-    // Add these lines to show category filter for Car Pass
-    if (doc_class === "CarPassDocument") {
-      $("#category-filter-div").removeClass("hidden");
-    }
   } else if (doc_class_details['type'] == 'award') {
     $("#subject-awards, #sortorder-awards-div").removeClass("hidden");
   } else if (doc_class_details['type'] == 'summary') {
@@ -304,17 +275,14 @@ function reveal_doc_specific_options() {
   update_print_button();
 }
 
+function on_walkins_count_change() {
+  update_print_button();
+}
+
 $(function() {
-  // Make sure any duplicate filter is removed immediately
-  $("#category-filter-container").remove();
-  
   poll();
   g_poll_interval = setInterval(function() { poll(); }, 10000);
   reveal_doc_specific_options();
   $("input[type=radio][name='doc-class']").change(function() { reveal_doc_specific_options(); });
-  
-  // Simple cleanup handler to remove any dynamically created filter
-  $("input[name='doc-class']").on('change', function() {
-    $("#category-filter-container").remove();
-  });
+  $("#walkins-count").on('keyup mouseup', on_walkins_count_change);
 });

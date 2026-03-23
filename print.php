@@ -89,78 +89,34 @@ var doc_classes = <?php echo json_encode($doc_classes); ?>;
 
 
 <div id="document-controls">
-<?php
+  <div class='mradiogroup'>
+    <?php
+    $radio_count = 0;
+    $last_type = '';
+    foreach ($doc_classes as $c => $details) {
+      ++$radio_count;
 
-$radio_count = 0;
-$last_type = '';
-echo "<div class='mradiogroup'>\n";
-foreach ($doc_classes as $c => $details) {
-  ++$radio_count;
-  $options = $details['options'];
+      if ($radio_count > 0 && $details['type'] != $last_type) {
+        echo "<div class='radio-spacer'>&nbsp;</div>\n";
+      }
+      $last_type = $details['type'];
 
-  if ($radio_count > 0 && $details['type'] != $last_type) {
-    echo "<div class='radio-spacer'>&nbsp;</div>\n";
-  }
-  $last_type = $details['type'];
+      echo "<label for='doc-class-".$c."'>";
+      echo "<b>".$details['name']."</b>";
+      echo "</label>\n";
 
-  echo "<label for='doc-class-".$c."'>";
-  echo "<b>".$details['name']."</b>";
-  echo "</label>\n";
-
-  echo "<input type='radio' name='doc-class' id='doc-class-".$c."'";
-  if ($radio_count == 1) {
-    echo " checked='checked'";
-  }
-  echo " value='".$c."'/>";
-}
-echo "</div>\n";  // controlgroup
-
-// Options for each document type are in a div[data-docname='...'], and so can
-// be switched on and off depending on which document type is chosen.
-$doc_index = 0;  // To distinguish radio options, if needed
-foreach ($doc_classes as $c => $details) {
-  ++$doc_index;
-  echo "<div data-docname=\"".$c."\" class=\"sub-options hidden\">";
-  echo "<p>Options for <b>".$details['name']."</b></p>";
-  foreach ($details['options'] as $opt => $opt_data) {
-    $ctrl_name = $c.'-'.$opt;
-    echo "<div class='param'>\n";
-    if ($opt_data['type'] == 'bool') {
-      echo "<input type='checkbox' name='".$ctrl_name."'";
-      if ($opt_data['default']) {
+      echo "<input type='radio' name='doc-class' id='doc-class-".$c."'";
+      if ($radio_count == 1) {
         echo " checked='checked'";
       }
-      echo "/><label for='".$ctrl_name."'>".$opt_data['desc']."</label><br/>\n";
-    } else if ($opt_data['type'] == 'int') {
-      echo "<input type='number' name='".$ctrl_name."' value='".$opt_data['default']."'/>";
-      echo "<label for='".$ctrl_name."'>".$opt_data['desc']."</label><br/>\n";
-    } else if ($opt_data['type'] == 'string') {
-      echo "<label for='".$ctrl_name."'>".$opt_data['desc']."</label>";
-      echo "<input type='text' name='".$ctrl_name."' value='".$opt_data['default']."' class='param-string'/><br/>\n";
-    } else if ($opt_data['type'] == 'radio') {
-      // values:
-      $first_radio = true;
-      echo "<div class='mradiogroup'>\n";
-      foreach ($opt_data['values'] as $v) {
-        // {value:, desc:}
-        echo "<input type='radio' id=\"opt-$doc_index-$opt-$v[value]\""
-                  .($first_radio ? " checked=\"checked\"" : "")
-                  ." name=\"$ctrl_name\" value=\"$v[value]\"/>\n";
-        echo "<label for=\"opt-$doc_index-$opt-$v[value]\">$v[desc]</label>\n";
-        $first_radio = false;
-      }
-      echo "</div>\n";
+      echo " value='".$c."'/>";
     }
-    echo "</div>\n";
-  }
-  echo "</div>\n";
-}
-?>
+    ?>
+  </div> <!-- mradiogroup -->
 </div>
 
-
 <div id="page-controls">
-<div class="block_buttons">
+  <div class="block_buttons">
 
    <div id="sortorder-racers-div">
      <p id="sortorder-paragraph">
@@ -188,6 +144,59 @@ foreach ($doc_classes as $c => $details) {
     <input type="button" value="Select All" onclick="select_all(true)"/>
     <input type="button" value="Deselect All" onclick="select_all(false)"/>
 </div>
+
+<div id="walkins-div" class="hidden">
+  Add
+  <input id="walkins-count" type="number" class="not-mobile" value="0"/>
+  extras
+  <input id='walkins-by-partition' type='checkbox' class='flipswitch' checked='checked'
+     data-on-text="Per <?php echo group_label();?>"
+     data-off-text="Overall"/>
+</div>
+
+<?php
+// Options for each document type are in a div[data-docname='...'], and so can
+// be switched on and off depending on which document type is chosen.
+$doc_index = 0;  // To distinguish radio options, if needed
+foreach ($doc_classes as $c => $details) {
+  ++$doc_index;
+  echo "<div data-docname=\"".$c."\" class=\"sub-options hidden\">";
+  echo "<p>Options for <b>".$details['name']."</b></p>";
+  foreach ($details['options'] as $opt => $opt_data) {
+    $ctrl_name = $c.'-'.$opt;
+    echo "<div class='param'>\n";
+    if ($opt_data['type'] == 'bool') {
+      echo "<input type='checkbox' name='".$ctrl_name."'";
+      if ($opt_data['default']) {
+        echo " checked='checked'";
+      }
+      echo "/><label for='".$ctrl_name."'>".$opt_data['desc']."</label><br/>\n";
+    } else if ($opt_data['type'] == 'int') {
+      echo "<input type='number' name='".$ctrl_name."' value='".$opt_data['default']."'/>";
+      echo "<label for='".$ctrl_name."'>".$opt_data['desc']."</label><br/>\n";
+    } else if ($opt_data['type'] == 'string') {
+      echo "<label for='".$ctrl_name."'>".$opt_data['desc']."</label>";
+      echo "<input type='text' name='".$ctrl_name."' value='".$opt_data['default']."' class='param-string'/><br/>\n";
+    } else if ($opt_data['type'] == 'radio') {
+      // values:
+      echo "<label for='".$ctrl_name."'>".$opt_data['desc']."</label><br/>\n";
+      $first_radio = true;
+      echo "<div class='mradiogroup'>\n";
+      foreach ($opt_data['values'] as $v) {
+        // {value:, desc:}
+        echo "<input type='radio' id=\"opt-$doc_index-$opt-$v[value]\""
+                  .($first_radio ? " checked=\"checked\"" : "")
+                  ." name=\"$ctrl_name\" value=\"$v[value]\"/>\n";
+        echo "<label for=\"opt-$doc_index-$opt-$v[value]\">$v[desc]</label>\n";
+        $first_radio = false;
+      }
+      echo "</div>\n";
+    }
+    echo "</div>\n";
+  }
+  echo "</div>\n";
+}
+?>
 </div>
 
 
