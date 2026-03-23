@@ -90,6 +90,7 @@ $(window).on('resize', set_checkin_table_height);
 <script type="text/javascript" src="js/video-device-picker.js"></script>
 <script type="text/javascript" src="js/imagecapture.js"></script>
 <script type="text/javascript" src="js/photo-capture-modal.js"></script>
+<script type="text/javascript" src="js/find-racer.js"></script>
 <script type="text/javascript" src="js/checkin.js"></script>
 </head>
 <body>
@@ -265,123 +266,6 @@ mobile_select_refresh($("#bulk_who"));
       <input type="button" value="Cancel"
         onclick='close_modal("#edit_racer_modal");'/>
 
-<div id="design_categories_section">
-  <h3>Design Award Categories</h3>
-  <p>Select design categories this racer wants to enter:</p>
-  <div id="design_categories_list" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;">
-    <!-- Will be populated by inline script -->
-  </div>
-</div>
-
-<script type="text/javascript">
-  // Load design categories when racer edit form is shown
-  function loadDesignCategoriesInline(racerId) {
-    var container = document.getElementById('design_categories_list');
-    if (!container) return;
-    
-    container.innerHTML = '<p>Loading design categories...</p>';
-    
-    // Fetch design categories
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'action.php?query=award.design-list', true);
-    
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        var awards = data.awards || [];
-        
-        if (awards.length === 0) {
-          container.innerHTML = '<p>No design awards available.</p>';
-          return;
-        }
-        
-        // Fetch racer's current entries
-        var entriesXhr = new XMLHttpRequest();
-        entriesXhr.open('GET', 'action.php?query=design.entries&racerid=' + racerId, true);
-        
-        entriesXhr.onload = function() {
-          var entries = {};
-          if (entriesXhr.status === 200) {
-            var entriesData = JSON.parse(entriesXhr.responseText);
-            (entriesData.entries || []).forEach(function(entry) {
-              entries[entry.awardid] = true;
-            });
-          }
-          
-          // Build checkboxes
-          var html = '';
-          for (var i = 0; i < awards.length; i++) {
-            var award = awards[i];
-            var isChecked = entries[award.awardid] ? ' checked' : '';
-            
-            html += '<div style="margin: 5px 0;">';
-            html += '<label>';
-            html += '<input type="checkbox" class="design-category-checkbox" data-awardid="' + award.awardid + '"' + isChecked + '> ';
-            html += award.awardname;
-            html += '</label>';
-            html += '</div>';
-          }
-          
-          container.innerHTML = html;
-        };
-        
-        entriesXhr.send();
-      } else {
-        container.innerHTML = '<p>Error loading design categories.</p>';
-      }
-    };
-    
-    xhr.send();
-  }
-  
-  // Save design entries when form is submitted
-  function saveDesignCategoriesInline(racerId) {
-    var checkboxes = document.querySelectorAll('.design-category-checkbox');
-    var entries = [];
-    
-    for (var i = 0; i < checkboxes.length; i++) {
-      var checkbox = checkboxes[i];
-      entries.push({
-        awardid: checkbox.getAttribute('data-awardid'),
-        selected: checkbox.checked
-      });
-    }
-    
-    var entriesXhr = new XMLHttpRequest();
-    entriesXhr.open('POST', 'action.php', true);
-    entriesXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    
-    entriesXhr.send('action=design.save-entries&racerid=' + racerId + 
-                   '&entries=' + encodeURIComponent(JSON.stringify(entries)));
-  }
-  
-  // Override the show_edit_racer_form function to load design categories
-  var originalShowEditRacerForm = window.show_edit_racer_form;
-  window.show_edit_racer_form = function(racerid) {
-    if (originalShowEditRacerForm) {
-      originalShowEditRacerForm(racerid);
-    }
-    
-    // Wait a moment for the modal to be fully displayed
-    setTimeout(function() {
-      loadDesignCategoriesInline(racerid);
-    }, 300);
-  };
-  
-  // Override the handle_edit_racer function to save design categories
-  var originalHandleEditRacer = window.handle_edit_racer;
-  window.handle_edit_racer = function() {
-    var racerid = document.getElementById('edit_racer').value;
-    
-    if (racerid >= 0) {
-      saveDesignCategoriesInline(racerid);
-    }
-    
-    if (originalHandleEditRacer) {
-      originalHandleEditRacer();
-    }
-  };
-</script>
       <div id="delete_racer_extension">
         <input type="button" value="Delete Racer"
            class="delete_button"
@@ -543,38 +427,136 @@ mobile_select_refresh($("#bulk_who"));
 </div>
 
 <?php require_once('inc/ajax-pending.inc'); ?>
-<div id="find-racer">
-  <div id="find-racer-form">
-    Find Racer:
-    <input type="text" id="find-racer-text" name="narrowing-text" class="not-mobile"/>
-    <span id="find-racer-message"><span id="find-racer-index" data-index="1">1</span> of <span id="find-racer-count">0</span></span>
-    <img onclick="cancel_find_racer()" src="img/cancel-20.png"/>
+<div id="design_categories_section">
+  <h3>Design Award Categories</h3>
+  <p>Select design categories this racer wants to enter:</p>
+  <div id="design_categories_list" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;">
+    <!-- Will be populated by inline script -->
   </div>
 </div>
+
 <script type="text/javascript">
-  // Direct script to test functionality
-  console.log("Direct script test");
-  
-  // Check if g_design_awards exists
-  if (typeof g_design_awards !== 'undefined') {
-    console.log("g_design_awards exists:", g_design_awards);
-  } else {
-    console.log("g_design_awards is not defined");
-  }
-  
-  // Try to load design awards directly
-  function directTestAwards() {
-    console.log("Running direct test");
+  // Load design categories when racer edit form is shown
+  function loadDesignCategoriesInline(racerId) {
+    var container = document.getElementById('design_categories_list');
+    if (!container) return;
+    
+    container.innerHTML = '<p>Loading design categories...</p>';
+    
+    // Fetch design categories
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'action.php?query=award.design-list', true);
+    
     xhr.onload = function() {
-      console.log("XHR response:", xhr.responseText);
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        var awards = data.awards || [];
+        
+        if (awards.length === 0) {
+          container.innerHTML = '<p>No design awards available.</p>';
+          return;
+        }
+        
+        // Fetch racer's current entries
+        var entriesXhr = new XMLHttpRequest();
+        entriesXhr.open('GET', 'action.php?query=design.entries&racerid=' + racerId, true);
+        
+        entriesXhr.onload = function() {
+          var entries = {};
+          if (entriesXhr.status === 200) {
+            var entriesData = JSON.parse(entriesXhr.responseText);
+            (entriesData.entries || []).forEach(function(entry) {
+              entries[entry.awardid] = true;
+            });
+          }
+          
+          // Build checkboxes
+          var html = '';
+          for (var i = 0; i < awards.length; i++) {
+            var award = awards[i];
+            var isChecked = entries[award.awardid] ? ' checked' : '';
+            
+            html += '<div style="margin: 5px 0;">';
+            html += '<label>';
+            html += '<input type="checkbox" class="design-category-checkbox" data-awardid="' + award.awardid + '"' + isChecked + '> ';
+            html += award.awardname;
+            html += '</label>';
+            html += '</div>';
+          }
+          
+          container.innerHTML = html;
+        };
+        
+        entriesXhr.send();
+      } else {
+        container.innerHTML = '<p>Error loading design categories.</p>';
+      }
     };
+    
     xhr.send();
   }
   
-  // Run the direct test when page loads
-  window.addEventListener('load', directTestAwards);
+  // Save design entries when form is submitted
+  function saveDesignCategoriesInline(racerId) {
+    var checkboxes = document.querySelectorAll('.design-category-checkbox');
+    var entries = [];
+    
+    for (var i = 0; i < checkboxes.length; i++) {
+      var checkbox = checkboxes[i];
+      entries.push({
+        awardid: checkbox.getAttribute('data-awardid'),
+        selected: checkbox.checked
+      });
+    }
+    
+    var entriesXhr = new XMLHttpRequest();
+    entriesXhr.open('POST', 'action.php', true);
+    entriesXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    
+    entriesXhr.send('action=design.save-entries&racerid=' + racerId + 
+                   '&entries=' + encodeURIComponent(JSON.stringify(entries)));
+  }
+  
+  // Override the show_edit_racer_form function to load design categories
+  var originalShowEditRacerForm = window.show_edit_racer_form;
+  window.show_edit_racer_form = function(racerid) {
+    if (originalShowEditRacerForm) {
+      originalShowEditRacerForm(racerid);
+    }
+    
+    // Wait a moment for the modal to be fully displayed
+    setTimeout(function() {
+      loadDesignCategoriesInline(racerid);
+    }, 300);
+  };
+  
+  // Override the handle_edit_racer function to save design categories
+  var originalHandleEditRacer = window.handle_edit_racer;
+  window.handle_edit_racer = function() {
+    var racerid = document.getElementById('edit_racer').value;
+    
+    if (racerid >= 0) {
+      saveDesignCategoriesInline(racerid);
+    }
+    
+    if (originalHandleEditRacer) {
+      originalHandleEditRacer();
+    }
+  };
 </script>
+
+<div id="find-racer" class="hidden">
+  <div id="find-racer-form">
+    Find Racer:
+    <input type="text" id="find-racer-text" name="narrowing-text" class="not-mobile"/>
+    <span id="find-racer-message"
+        ><span id="find-racer-index" data-index="1">1</span>
+        of
+        <span id="find-racer-count">0</span>
+    </span>
+    <img onclick="cancel_find_racer()" src="img/cancel-20.png"/>
+  </div>
+</div>
+
 </body>
 </html>

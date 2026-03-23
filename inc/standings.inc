@@ -437,25 +437,33 @@ class StandingsOracle {
     return $rankids;
   }
 
+  // Returns the number of columns per row in the table.
   private function write_standings_table_headers() {
     echo "<tr class='headers'>";
     echo "<th>Place</th>";
     echo "<th>Car Number</th>";
     echo "<th>Name</th>";
+    $ncolumns = 3;
     if (show_car_name_in_standings()) {
       echo "<th>Car Name</th>";
+      ++$ncolumns;
     }
     if ($this->use_groups) {
       echo "<th class='col-group'>".group_label()."</th>";
       echo "<th class='col-ingroup'>In <span id='per-group-label'>".group_label()."</span></th>";
+      $ncolumns += 2;
     }
     if ($this->use_subgroups) {
       echo "<th class='col-subgroup'>".subgroup_label()."</th>";
       echo "<th class='col-insubgroup'>In <span id='per-subgroup-label'>".subgroup_label()."</span></th>";
+      $ncolumns += 2;
     }
     if ($this->has_full_field_standings()) {
       echo "<th class='col-insuper'>In ".supergroup_label()."</th>";
+      ++$ncolumns;
     }
+
+    $ncolumns += 5;
     echo "<th class='col-inround'>In Round</th>";
 
     echo "<th>Heats</th>";
@@ -468,6 +476,7 @@ class StandingsOracle {
     echo "<th>Best</th>";
     echo "<th>Worst</th>";
     echo "</tr>\n";
+    return $ncolumns;
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -593,9 +602,65 @@ class StandingsOracle {
     }
   }
 
+  // For rounds that include any trophy-ineligible racers, add a row pointing
+  // out that these racers weren't included in the standings.  It occasionally
+  // happens that all the racers in a group or the whole field get marked as
+  // "ineligible" for trophies, and the standings page doesn't show anything
+  // useful; this should help make clear what's going on in that case.
+  private function write_footnote_rows($ncolumns) {
+    global $db;
+
+    if ($this->use_groups) {
+      $stmt = $db->query('SELECT roundid, Rounds.classid, COUNT(*) AS count'
+                         .' FROM Roster JOIN RegistrationInfo USING (racerid)'
+                         .'             JOIN Rounds USING (roundid)'
+                         .' WHERE passedinspection = 1 AND exclude = 1'
+                         .' GROUP BY Rounds.classid');
+      foreach($stmt as $row) {
+        echo "<tr class='".stkey_round($row['roundid'])."'>";
+        echo "<td colspan='$ncolumns'>";
+        echo "Results for ".$row['count']." ineligible racer".($row['count'] == 1 ? '' : 's')
+                           ." not shown";
+        echo "</td>";
+        echo "</tr>";
+      }
+    }
+
+    if ($this->use_subgroups) {
+      $stmt = $db->query('SELECT roundid, rankid, COUNT(*) AS count'
+                         .' FROM Roster JOIN RegistrationInfo USING (racerid)'
+                         .'             JOIN Rounds USING (roundid)'
+                         .' WHERE passedinspection = 1 AND exclude = 1'
+                         .' GROUP BY rankid');
+      foreach($stmt as $row) {
+        echo "<tr class='".stkey_round_subgroup($row['roundid'], $row['rankid'])."'>";
+        echo "<td colspan='$ncolumns'>";
+        echo "Results for ".$row['count']." ineligible racer".($row['count'] == 1 ? '' : 's')
+                           ." not shown";
+        echo "</td>";
+        echo "</tr>";
+      }
+    }
+
+    if ($this->has_full_field_standings()) {
+      $stmt = $db->query('SELECT COUNT(*) AS count'
+                         .' FROM RegistrationInfo'
+                         .' WHERE passedinspection = 1 AND exclude = 1');
+      foreach($stmt as $row) {  // Only one
+        echo "<tr class='".stkey_full_field()."'>";
+        echo "<td colspan='$ncolumns'>";
+        echo "Results for ".$row['count']." ineligible racer".($row['count'] == 1 ? '' : 's')
+                           ." not shown";
+        echo "</td>";
+        echo "</tr>";
+      }
+    }
+  }
+
   public function write_standings_table() {
-    $this->write_standings_table_headers();
+    $ncolumns = $this->write_standings_table_headers();
     $this->write_standings_table_rows();
+    $this->write_footnote_rows($ncolumns);
   }
 
   function highest_round($classid) {
@@ -626,7 +691,24 @@ class StandingsOracle {
       return stkey_round_subgroup($roundid, $rankid);
     }
   }
-  
+
+  // Returns two maps, one is classid to key, the second is rankid to key
+  function class_and_rank_keys() {
+    $classmap = array();  // classid to key
+    foreach ($this->classseq as $classid) {
+      $classmap[$classid] = $this->class_key($classid);
+    }
+    $rankmap = array();
+    foreach ($this->rankseq as $rankid) {
+      $rankmap[$rankid] = $this->rank_key($rankid);
+    }
+    return array($classmap, $rankmap);
+  }
+
+  // Returns a list of catalog entries, each of which is
+  // {name:, key:, presentation:}, with presentation being one of the strings in
+  // the table below ('ff', etc.).
+  //
   // Presentation determines:
   // (1) What to show in the first column
   // (2) Which other columns to show:
@@ -737,6 +819,41 @@ class StandingsOracle {
     return $catalog;
   }
 
+  // For use by the scenes editor, where there likely aren't any completed rounds.
+  function standings_choices_for_scenes() {
+    $choices = array();
+
+    if ($this->has_full_field_standings()) {
+      $choices[] = array('name' => supergroup_label(),
+                         'value' => array('key' => stkey_full_field()));
+    }
+
+    $rankseq_index = 0;
+    foreach ($this->classseq as $classid) {
+      $cl = $this->class_details[$classid];
+      $details = $this->class_details[$classid];  // TODO
+
+      if ($this->use_groups) {
+        $choices[] = array('name' => $cl['class'],
+                           'value' => array('classid' => $classid));
+      }
+
+      if ($this->use_subgroups) {
+        for (; $rankseq_index < count($this->rankseq); ++$rankseq_index) {
+          $rank = $this->ranks[$this->rankseq[$rankseq_index]];
+          if ($rank['classid'] != $classid) {
+            break;
+          }
+
+          $choices[] = array('name' => $cl['class'].' / '.$rank['rank'],
+                             'value' => array('rankid' => $rank['rankid']));
+        }
+      }
+    }
+
+    return $choices;
+  }
+
   function debug_summary() {
     return array('class_details' => $this->class_details,
                  'unfinished_rounds' => $this->unfinished_rounds,
@@ -809,4 +926,5 @@ class StandingsTracker {
     return $place;
   }
 }
+
 ?>
