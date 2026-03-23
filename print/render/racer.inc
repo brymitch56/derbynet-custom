@@ -150,7 +150,7 @@ if (!is_subclass_of(document_class(), 'PrintableRacerDocument')) {
 
   if (isset($_GET['walkins'])) {
     $walkins = $_GET['walkins'];
-    if (str_ends_with($walkins, 'p')) {  // "per partition"
+    if (substr($walkins, -1) === 'p') {  // "per partition"
       // if $mult is zero, then next_car_numbers will just repeat the same car
       // numbers for each partition.
       $prev = 0;
