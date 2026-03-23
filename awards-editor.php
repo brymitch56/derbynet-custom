@@ -112,7 +112,8 @@ list($classes, $classseq, $ranks, $rankseq) = classes_and_ranks();
     <br/>
     <input type="submit"/>
 
-	<input type="button" value="Close" onclick="close_modal('#design_category_modal'); return false;"/>
+    <input type="button" value="Close"
+           onclick="close_modal('#award_editor_modal');"/>
     <hr/><br/>
 
     <input type="button" class="delete_button" value="Delete Award"
@@ -142,7 +143,7 @@ list($classes, $classseq, $ranks, $rankseq) = classes_and_ranks();
   </div>
   
   <div style="text-align: center; margin-top: 20px;">
-	<input type="button" value="Close" onclick="close_modal('#design_category_modal');"/>
+<input type="button" value="Close" onclick="close_modal('#design_category_modal');"/>
   </div>
 </div>
 

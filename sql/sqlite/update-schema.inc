@@ -121,13 +121,5 @@ if (schema_version() < 10) {
 
 // For each new schema version, copy the DELETE and INSERT for schema version
 
-if (schema_version() < 11) {  // Design categories
-  $updates = array_merge($updates,
-                         @include(sql_file_path('design-entries')));
-
-  $updates[] = "DELETE FROM RaceInfo WHERE itemkey = 'schema'";
-  $updates[] = "INSERT INTO RaceInfo(itemkey, itemvalue) VALUES('schema', '11')";
-}
-
 return $updates;
 ?>

@@ -10,10 +10,6 @@ require_once('inc/voterid.inc');
 require_once('inc/standings.inc');
 require_once('inc/schema_version.inc');
 
-// In vote.php, add this at the start of the file or near the top
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 $is_open = read_raceinfo('balloting', 'closed') == 'open';
 
 ?><!DOCTYPE html>
@@ -28,29 +24,22 @@ $is_open = read_raceinfo('balloting', 'closed') == 'open';
 <script type="text/javascript" src="js/modal.js"></script>
 <script type="text/javascript" src="js/vote.js"></script>
 <script type="text/javascript">
-var g_is_design_award = {};
 var g_ballot;
 var g_awardid;
 var g_racerid;
+var g_is_design_award = {};
 <?php if ($is_open) { ?>
   $(function() { get_ballot(); });
-  // Load design award info
   $(function() {
-    console.log("Loading design awards...");
     $.ajax('action.php', {
       type: 'GET',
       data: {
         query: 'award.design-list'
       },
       success: function(data) {
-        console.log("Design awards response:", data);
         (data.awards || []).forEach(function(award) {
           g_is_design_award[award.awardid] = true;
         });
-        console.log("g_is_design_award populated:", g_is_design_award);
-      },
-      error: function(xhr, status, error) {
-        console.error("Error loading design awards:", status, error);
       }
     });
   });
@@ -61,7 +50,6 @@ var g_racerid;
 </head>
 <body>
 <?php
-
 make_banner('Ballot');
 
 $order = '';

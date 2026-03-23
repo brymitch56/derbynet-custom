@@ -2,7 +2,10 @@
 
 $sceneid = $_POST['sceneid'];
 $kiosk_name = $_POST['kiosk_name'];
-$page = $_POST['page'];
+$page = @$_POST['page'];
+// $_POST['params']
+
+require_once('inc/scenes.inc');
 
 if (have_permission(SET_UP_PERMISSION)) {
   $prev = read_single_value('SELECT page FROM SceneKiosk'
@@ -11,6 +14,10 @@ if (have_permission(SET_UP_PERMISSION)) {
                             array(':sceneid' => $sceneid,
                                   ':kiosk_name' => $kiosk_name));
   if ($page) {
+    if (isset($_POST['params'])) {
+      $page .= '#'.$_POST['params'];
+    }
+    
     if ($prev) {
       $stmt = $db->prepare('UPDATE SceneKiosk SET page = :page'
                            .' WHERE sceneid = :sceneid'
@@ -31,6 +38,7 @@ if (have_permission(SET_UP_PERMISSION)) {
                          ':kiosk_name' => $kiosk_name));
   }
 
+  json_out('all-scenes', all_scenes());
   json_success();
 } else {
   json_not_authorized();

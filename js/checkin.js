@@ -4,18 +4,6 @@
 // Maps partitionid to highest existing carnumber for that partitionid
 g_next_carnumbers = [];
 g_poll_max_interval = 0;
-
-// Design Categories Integration
-// Global variable to hold design award data
-var g_design_awards = [];
-var g_racer_design_entries = {};
-
-// Simple test function
-function simpleTest() {
-  alert('Simple test function works!');
-  console.log('Simple test function works!');
-}
-
 function poll_max_carnumbers() {
   $.ajax(g_action_url,
          {type: 'GET',
@@ -32,42 +20,6 @@ function poll_max_carnumbers() {
             }
           }
          });
-}
-
-function testDesignAwards() {
-  var directUrl = g_action_url + '?query=award.design-list';
-  console.log("Testing design awards API at: " + directUrl);
-  
-  // Make a direct fetch request
-  fetch(directUrl)
-    .then(response => response.json())
-    .then(data => {
-      console.log("API response:", data);
-      alert("Got " + (data.awards ? data.awards.length : 0) + " design awards. See console for details.");
-      
-      // Try to manually add them to the DOM
-      var container = document.getElementById('design_categories_list');
-      if (container) {
-        var html = '';
-        if (data.awards && data.awards.length > 0) {
-          data.awards.forEach(function(award) {
-            html += '<div style="margin: 5px 0;"><label>' +
-                    '<input type="checkbox" name="design_category_' + award.awardid + '"> ' +
-                    award.awardname +
-                    '</label></div>';
-          });
-        } else {
-          html = '<p>No design awards found</p>';
-        }
-        container.innerHTML = html;
-      } else {
-        alert("Container not found!");
-      }
-    })
-    .catch(error => {
-      console.error("API error:", error);
-      alert("Error: " + error.message);
-    });
 }
 
 // carnos is an array of {partitionid, next_carnumber}
@@ -93,10 +45,6 @@ $(function() {
       }
     }
   });
-  
-  // Load design awards when page loads
-  console.log("Document ready, loading design awards...");
-  loadDesignAwards();
 });
 
 // var g_order specified in checkin.php
@@ -227,11 +175,6 @@ function show_edit_racer_form(racerid) {
     handle_edit_racer();
     return false;
   });
-  
-  // Load design categories for this racer
-setTimeout(function() {
-  loadRacerDesignEntries(racerid);
-}, 300);
 }
 
 function show_new_racer_form() {
@@ -260,9 +203,6 @@ function show_new_racer_form() {
     handle_edit_racer();
     return false;
   });
-  
-  // Reset design categories for new racer
-  loadRacerDesignEntries(-1);
 }
 
 function handle_edit_racer() {
@@ -324,14 +264,6 @@ function handle_edit_racer() {
             }
 
             sort_checkin_table();
-            
-            // Save design entries after racer is saved
-            if (racerid >= 0) {
-              saveDesignEntries(racerid);
-            } else if (data.hasOwnProperty('new-row') && data['new-row'].racerid) {
-              // For new racers, save design entries with the new racerid
-              saveDesignEntries(data['new-row'].racerid);
-            }
           },
          });
 }
@@ -555,20 +487,6 @@ $(function() {
   $("#mobile-checkin-form").on('submit', on_mobile_checkin_submit);
 });
 
-function global_keypress(event) {
-  if (document.activeElement == document.body ||
-      document.activeElement == null) {
-    // If no other element holds focus, focus on the search box.  This is
-    // especially important with barcode scanners, as a lack of focus will
-    // ignore the scanned text.
-    //
-    // We're invoked on a keypress event; the actual input key will be read as
-    // part of handling for the keyup that follows.
-    $("#find-racer-text").focus();
-    console.log('Focusing on search box');
-  }
-}
-
 function remove_search_highlighting() {
   $("span.found-racer").each(function() {
     var p = $(this).parent();
@@ -577,16 +495,7 @@ function remove_search_highlighting() {
   });
 }
 
-function cancel_find_racer() {
-  $("#find-racer-text").val("");
-  $("#find-racer").removeClass("notfound");
-  $("#find-racer-index").data("index", 1).text(1);
-  $("#find-racer-count").text(0);
-  $("#find-racer-message").css({visibility: 'hidden'});
-  // TODO $("#find-racer").addClass("hidden");
-  remove_search_highlighting();
-}
-
+// Called when a new row gets added by "New Racer", or for any barcode action.
 function scroll_and_flash_row(row) {
   scroll_to_row(row);
 
@@ -601,30 +510,46 @@ function scroll_and_flash_row(row) {
   setTimeout(function() {
     row.removeClass('highlight');
   }, 750);
-
-  $("#find-racer-index").data("index", 1).text(1);
-  $("#find-racer-count").text(0);
-  $("#find-racer-message").css({visibility: 'hidden'});
-  $("#find-racer").removeClass("notfound");
 }
 
 // Returns true if processed as a barcode scan
 function maybe_barcode(raw_search) {
-  if (raw_search.startsWith('PWDid') && raw_search.length == 8) {
-    remove_search_highlighting();
-    var row = $("tr[data-racerid=" + parseInt(raw_search.substr(5)) + "]");
-  } else if (raw_search.startsWith('PWD') && raw_search.length == 6) {
-    remove_search_highlighting();
-    var cell = $("td[data-car-number=" + parseInt(raw_search.substr(3)) + "]");
-    var row = cell.closest('tr');
+  if (raw_search.startsWith('PWD') && raw_search.endsWith('.')) {
+    $.ajax(g_action_url,
+           {type: 'GET',
+            data: {query: 'racer.list',
+                   barcode: raw_search},
+            success: function (data) {
+              console.log('racer.list returns', data);  // TODO
+              if (data.hasOwnProperty('racers')) {
+                var racers = data.racers;
+                if (racers.length == 1 && racers[0].hasOwnProperty('racerid')) {
+                  console.log('racer.list finds racerid ' + racers[0].racerid);
+                  if (data.hasOwnProperty('car-numbers')) {
+                    read_next_carnumbers(data['car-numbers']);
+                  }
+                  if (data.hasOwnProperty('new-row')) {
+                    console.log('new-row property', data['new-row']);
+                    var row = addrow0(data['new-row']);
+                    console.log('added row', row);
+                    flipswitch(row.find('input[type="checkbox"].flipswitch'));
+                    setTimeout(function() { apply_barcode_action(racers[0].racerid); }, 100);
+                  } else {
+                    apply_barcode_action(racers[0].racerid);
+                  }
+                }
+              }
+            }
+           });
+    return true;
   } else {
     return false;
   }
+}
 
-  if (row.length != 1) {
-    return false;
-  }
-  
+function apply_barcode_action(racerid) {
+  var row = $("tr[data-racerid=" + racerid + "]");
+
   scroll_and_flash_row(row);
 
   var racerid = row.attr('data-racerid');
@@ -644,56 +569,40 @@ function maybe_barcode(raw_search) {
       show_photo_modal(racerid, repo);
     }, 750);
   }
-
-  return true;
 }
 
-// In response to each onchange event for the #find-racer-text control, hide the
-// table rows that don't contain the value string.
-function find_racer() {
-  var raw_search = $("#find-racer-text").val();
-  if (maybe_barcode(raw_search)) {
-    return;
+// Returns the number of found instances.  If > 0, scrolls to the first one.
+function search_for_racers(search_string) {
+  // domain is a jquery for all the td's that we're interested in searching
+  // (firstname, lastname, car number)
+  var domain = $("#main-checkin-table tbody tr")
+      .find("td.sort-firstname, td.sort-lastname, td.sort-car-number");
+  var find_count = domain.filter(function() {
+    // this = <td> element for firstname, lastname, or car number
+    return $(this).text().toLowerCase().indexOf(search_string) != -1;
+  }).length;
+
+  if (find_count != 0) {
+    domain.contents().each(function() {
+      if (this.nodeType === 3) {  // Node.TEXT_NODE Text node
+        // $.text() ignores any <span> elements within and just presents the
+        // text alone.
+        var where = $(this).text().toLowerCase().indexOf(search_string);
+        if (where != -1) {
+          var match = this.splitText(where);
+          match.splitText(search_string.length);
+          $(match).wrap('<span class="found-racer"></span>');
+        }
+      }
+    });
+    scroll_to_nth_found_racer(1);
   }
 
-  var search_string = raw_search.toLowerCase();
-  if (search_string.length == 0) {
-    cancel_find_racer();
-  } else {
-    var domain = $("#main-checkin-table tbody tr")
-        .find("td.sort-firstname, td.sort-lastname, td.sort-car-number");
-    var find_count = domain.filter(function() {
-      // this = <td> element for firstname, lastname, or car number
-      return $(this).text().toLowerCase().indexOf(search_string) != -1;
-    }).length;
-    if (find_count != 0) {
-      $("#find-racer").removeClass("notfound");
-      remove_search_highlighting();
-      domain.contents().each(function() {
-        if (this.nodeType === 3) {  // Node.TEXT_NODE Text node
-          var where = $(this).text().toLowerCase().indexOf(search_string);
-          if (where != -1) {
-            var match = this.splitText(where);
-            match.splitText(search_string.length);
-            $(match).wrap('<span class="found-racer"></span>');
-          }
-        }
-      });
-      $("#find-racer-index").data("index", 1).text(1);
-      $("#find-racer-count").text(find_count);
-      $("#find-racer-message").css({visibility: 'visible'});
-      scroll_to_nth_found_racer(1);
-    } else {
-      console.log("No match!");
-      $("#find-racer").addClass("notfound");
-      $("#find-racer-index").data("index", 1).text(1);
-      $("#find-racer-count").text(0);
-      $("#find-racer-message").css({visibility: 'hidden'});
-    }
-  }
+  return find_count;
 }
 
 function scroll_to_row(row) {  // row is a jquery for one tr element
+  console.log('scroll_to_row', row);
   var div = $("#main-checkin-table-div");
   var th_height = $("#main-checkin-table th").eq(0).closest('tr').height();
   // delta is the number of pixels from the top of the table to the middle of the row
@@ -712,52 +621,10 @@ function scroll_to_nth_found_racer(n) {
   scroll_to_row($("span.found-racer").eq(n - 1).closest('tr'));
 }
 
-// inc = 1 for next found racer, -1 for previous
-function next_or_previous_found_racer(inc) {
-  var count = $("#find-racer-index").data("index");
-  if (inc > 0 && count < $("span.found-racer").length) {
-    ++count;
-  } else if (inc < 0 && count > 1) {
-    --count;
-  } else {
-    return;
-  }
-
-  $("#find-racer-index").data("index", count).text(count);
-  scroll_to_nth_found_racer(count);
-}
-
-function intercept_arrow_key(event) {
-  switch (event.which) {
-  case 38:  // up
-    next_or_previous_found_racer(-1);
-    event.preventDefault();
-    break;
-  case 40: // down
-    next_or_previous_found_racer(+1);
-    event.preventDefault();
-    break;
-  case 9:  // tab or shift-tab
-    next_or_previous_found_racer(event.shiftKey ? -1 : +1);
-    event.preventDefault();
-    break;
-  case 27:  // esc
-    cancel_find_racer();
-    event.preventDefault();
-    break;
-  }
-}
-
 $(function() {
-  $(document).on("keypress", global_keypress);
-  $("#find-racer-text").on("input", find_racer)
-    .on("keydown", intercept_arrow_key);
-  // jquery mobile would add a distracting "blue glow" around the input form
-  // after the text input receives focus.  Ugh.
-  $("#find-racer-text").off('focus');
-
   $("thead a[data-order]").on('click', handle_sorting_event);
 });
+
 
 // TODO We might be in a better position to know the row number (and parity)
 // than the server (which sends rowno).
@@ -847,164 +714,4 @@ function make_table_row(racer, xbs) {
 
 function add_table_row(tbody, racer, xbs) {
   return make_table_row(racer, xbs).appendTo($(tbody));
-}
-
-// Design Categories Integration
-// Load design awards from server
-function loadDesignAwards() {
-  console.log("Loading design awards...");
-  $.ajax(g_action_url, {
-    type: 'GET',
-    data: {
-      query: 'award.design-list'
-    },
-    success: function(data) {
-      console.log("Design awards loaded:", data);
-      g_design_awards = data.awards || [];
-    },
-    error: function(xhr, status, error) {
-      console.error("Error loading design awards:", status, error);
-      g_design_awards = [];
-    }
-  });
-}
-
-// Load a racer's design entries when editing a racer
-function loadRacerDesignEntries(racerId) {
-  console.log("Loading design entries for racer ID:", racerId);
-  
-  if (!racerId || racerId < 0) {
-    // New racer, no entries to load
-    console.log("New racer, no entries to load");
-    g_racer_design_entries = {};
-    updateDesignCategoriesUI();
-    return;
-  }
-  
-  console.log("Fetching entries from server");
-  $.ajax(g_action_url, {
-    type: 'GET',
-    data: {
-      query: 'design.entries',
-      racerid: racerId
-    },
-    success: function(data) {
-      console.log("Received entries data:", data);
-      g_racer_design_entries = {};
-      
-      // Convert array to object for easier lookup
-      (data.entries || []).forEach(function(entry) {
-        g_racer_design_entries[entry.awardid] = true;
-      });
-      
-      console.log("Updated entries:", g_racer_design_entries);
-      updateDesignCategoriesUI();
-    },
-    error: function(xhr, status, error) {
-      console.error("Error fetching design entries:", status, error);
-      updateDesignCategoriesUI();
-    }
-  });
-}
-
-// Update the design categories UI with current entries
-function updateDesignCategoriesUI() {
-  console.log("Updating design categories UI with direct HTML insertion");
-  
-  // Get reference to container
-  var container = document.getElementById('design_categories_list');
-  if (!container) {
-    console.error("Container #design_categories_list not found!");
-    return;
-  }
-  
-  // Clear container
-  container.innerHTML = '<p>Loading design categories...</p>';
-  
-  // Use a direct AJAX call to fetch the latest awards
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', g_action_url + '?query=award.design-list', true);
-  
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      var response = JSON.parse(xhr.responseText);
-      var awards = response.awards || [];
-      
-      console.log("Direct XHR - Awards loaded:", awards);
-      
-      if (awards.length === 0) {
-        container.innerHTML = '<p>No design awards available.</p>';
-        return;
-      }
-      
-      // Build the HTML for checkboxes
-      var html = '';
-      for (var i = 0; i < awards.length; i++) {
-        var award = awards[i];
-        var isChecked = g_racer_design_entries[award.awardid] ? ' checked' : '';
-        
-        html += '<div style="margin: 5px 0;">';
-        html += '<label>';
-        html += '<input type="checkbox" class="design-category-checkbox" name="design_category_' + award.awardid + '"' + isChecked + '> ';
-        html += award.awardname;
-        html += '</label>';
-        html += '</div>';
-      }
-      
-      container.innerHTML = html;
-      console.log("Design categories UI updated with direct HTML");
-    } else {
-      console.error("Error loading design awards:", xhr.statusText);
-      container.innerHTML = '<p>Error loading design categories.</p>';
-    }
-  };
-  
-  xhr.onerror = function() {
-    console.error("Network error when loading design awards");
-    container.innerHTML = '<p>Network error loading design categories.</p>';
-  };
-  
-  xhr.send();
-}
-
-// Save design entries when saving racer info
-function saveDesignEntries(racerId) {
-  if (!racerId) return;
-  console.log("Saving design entries for racer ID:", racerId);
-  
-  var entries = [];
-  var checkboxes = document.querySelectorAll('.design-category-checkbox');
-  
-  for (var i = 0; i < checkboxes.length; i++) {
-    var checkbox = checkboxes[i];
-    var awardId = checkbox.name.replace('design_category_', '');
-    var isChecked = checkbox.checked;
-    
-    entries.push({
-      awardid: awardId,
-      selected: isChecked
-    });
-  }
-  
-  console.log("Sending entries to server:", entries);
-  
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', g_action_url, true);
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      console.log("Design entries saved successfully");
-    } else {
-      console.error("Error saving design entries:", xhr.statusText);
-    }
-  };
-  
-  xhr.onerror = function() {
-    console.error("Network error when saving design entries");
-  };
-  
-  var data = 'action=design.save-entries&racerid=' + racerId + 
-             '&entries=' + encodeURIComponent(JSON.stringify(entries));
-  xhr.send(data);
 }
